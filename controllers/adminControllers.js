@@ -400,7 +400,7 @@ class AdminAuthentification {
     async getRecords(req, res) {
         try {
             const { type, page = 1, limit = 10, sort = 'createdAt', order = 'DESC' } = req.query;
-            const offset = (parseInt(page) - 1) * parseInt(pageSize);
+            const offset = (parseInt(page) - 1) * parseInt(limit);
             const where = {}
             if (type) {
                 where.type = type;
@@ -429,6 +429,12 @@ class AdminAuthentification {
             const { id } = req.params;
             const user = await User.findOne({
                 where: { uuid: id },
+                include: [
+                    {
+                        model: Job,
+                        as: "job"
+                    }
+                ]
             });
 
             if (!user) {
